@@ -6,6 +6,7 @@ from datasets import load_datasets
 from scripts.intro import intro_tab
 from scripts.stock import stock_tab
 from scripts.resultados import resultados_tab
+from scripts.razones import razones_tab
 
 # Load the datasets and perform any processing on them
 datasets = load_datasets()
@@ -13,7 +14,8 @@ datasets = load_datasets()
 # Put all the tabs into one application
 tabs = Tabs(tabs = [intro_tab(),
                     stock_tab(datasets),
-					resultados_tab(datasets)
+					resultados_tab(datasets),
+					razones_tab(datasets),
 					])
 
 # Put the tabs in the current document for display
