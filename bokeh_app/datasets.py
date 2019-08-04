@@ -50,11 +50,17 @@ def load_datasets():
 
     for (tick, name) in ticks:
         dataset[tick] = {
+            "render": True,
             "name": name,
     		"income_statement_data" : load_income_statement(tick, start_date, end_date),
     		#"cash_flow_data" : load_cash_flow(tick, start_date, end_date),
     		"balance_sheet_data" : load_balance_sheet(tick, start_date, end_date),
     		"stock_data" : load_stock_data(tick, start_date, end_date),
         }
+
+    dataset["^GSPC"] = {
+        "render": False,
+        "stock_data" : load_stock_data("^GSPC", start_date, end_date),
+    }
 
     return dataset

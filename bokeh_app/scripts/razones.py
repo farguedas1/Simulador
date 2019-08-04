@@ -63,6 +63,8 @@ def render_razones_financieras(tick, name, balance_sheet_data):
 def razones_tab(datasets):
     tick_widgets = []
     for tick in datasets:
+        if not datasets[tick]["render"]:
+            continue
         tick_widgets.append(render_razones_financieras(
             tick, datasets[tick]["name"], datasets[tick]["balance_sheet_data"]))
 

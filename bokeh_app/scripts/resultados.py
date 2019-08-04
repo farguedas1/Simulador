@@ -39,6 +39,8 @@ def render_income_statement(tick, name, income_statement_data):
 def resultados_tab(datasets):
     tick_widgets = []
     for tick in datasets:
+        if not datasets[tick]["render"]:
+            continue
         tick_widgets.append(render_income_statement(
             tick, datasets[tick]["name"], datasets[tick]["income_statement_data"]))
 
