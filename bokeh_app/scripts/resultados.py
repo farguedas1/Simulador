@@ -44,4 +44,5 @@ def resultados_tab(datasets):
         tick_widgets.append(render_income_statement(
             tick, datasets[tick]["name"], datasets[tick]["income_statement_data"]))
 
-    return Panel(child = column(children=tick_widgets), title = 'Resultados')
+    return column(children=tick_widgets, name="resultados")
+    #return Panel(name="resultados", child = column(children=tick_widgets), title = 'Resultados')

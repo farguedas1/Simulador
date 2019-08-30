@@ -1,0 +1,92 @@
+{% extends base %}
+
+{% macro bootstrap_embed(obj) -%}
+<div class="row" id="{{ obj.elementid }}"{% if obj.id %} data-root-id="{{ obj.id }}"{% endif %}></div>
+{%- endmacro %}
+
+{% block js_resources %}
+<script type="text/javascript" src="static/js/bokeh.min.js?v=dc7e8d21cec93d72cc2a83b17ee11cac"></script>
+<script type="text/javascript" src="bokeh_app/static/js/bokeh-widgets.min.js"></script>
+<script type="text/javascript" src="static/js/bokeh-tables.min.js?v=5f778b8a005d8538b5b13998ec45fc16"></script>
+<script type="text/javascript" src="static/js/bokeh-gl.min.js?v=be19384f76795da42f51580e7b5fd473"></script>
+<script type="text/javascript">
+    Bokeh.set_log_level("info");
+</script>
+{% endblock %}
+
+{% block postamble %}
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!-- Custom styles for this template -->
+<link href="bokeh_app/static/css/dashboard.css" rel="stylesheet">
+{% endblock %}
+
+{% block contents %}
+<!-- Image and text -->
+<nav class="navbar fixed-top navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">
+    <img src="bokeh_app/static/images/tec_logo_white.png" height="50" class="d-inline-block align-middle" alt="">
+  </a>
+  <span class="navbar-text">
+  Plantilla Estados Financieros Comparativo para Empresas
+  </span>
+</nav>
+<div class="container-fluid">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+        aria-selected="true">Inicio</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="companies-tab" data-toggle="tab" href="#companies" role="tab" aria-controls="companies"
+        aria-selected="true">Empresas</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+        aria-selected="false">Razones</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+        aria-selected="false">Resultados</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+      <div class="jumbotron">
+        <h1 class="display-4">Plantilla Estados Financieros Comparativo para Empresas</h1>
+        <p class="lead">Maestría en Administración de Empresas, Instituto Tecnológico de Costa Rica</p>
+        <hr class="my-4">
+        <img src="bokeh_app/static/images/logo-tec.png" class="float-right">
+        <br>
+        <br>
+        <h5>
+          <ul>
+            <li>Alejandra Alfaro Ramírez</li>
+            <li>Francisco Arguedas Mejías</li>
+            <li>Cesar Cárdenas Avales</li>
+          </ul>
+          <br>
+          <p>2019</p>
+        </h5>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="companies" role="tabpanel" aria-labelledby="companies-tab">
+      {{ embed(roots.empresas) }}
+    </div>
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+      {{ embed(roots.razones) }}
+    </div>
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+      {{ embed(roots.resultados) }}
+    </div>
+  </div>
+</div>
+
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+{% endblock %}

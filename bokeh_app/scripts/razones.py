@@ -67,5 +67,4 @@ def razones_tab(datasets):
             continue
         tick_widgets.append(render_razones_financieras(
             tick, datasets[tick]["name"], datasets[tick]["balance_sheet_data"]))
-
-    return Panel(child = row(children=tick_widgets), title = 'Razones Financieras')
+    return row(children=tick_widgets, name="razones")
