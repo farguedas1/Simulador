@@ -3,10 +3,11 @@
   website: "https://www.unilever.com"
   logo: "1200px-Unilever.png"
   description: |
-    Unilever is a British-Dutch transnational consumer goods company
-    co-headquartered in London, United Kingdom, and Rotterdam, Netherlands.
-    Its products include food and beverages, cleaning agents, beauty products,
-    and personal care products. It is Europe’s seventh most valuable company.
+    es una empresa multinacional británico-neerlandesa creada en 1930 como
+    resultado de la fusión de Margarine Unie, compañía neerlandesa de
+    margarina, y Lever Brothers, fabricante inglés de jabones. Durante la
+    segunda mitad del siglo XX la empresa se diversificó a base de productos
+    hechos de aceites y grasas y amplió sus operaciones en todo el mundo.
   exchange_rates:
     2014: 1.21
     2015: 1.09

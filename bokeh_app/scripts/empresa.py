@@ -25,9 +25,9 @@ def datetime(x):
 def stock_plot(tick, stock_data):
     hover = HoverTool(
         tooltips=[
-            ( 'date',   '@Date{%F}'            ),
-            ( 'close',  '@adj_close{%0.2f}'    ), # use @{ } for field names with spaces
-            ( 'volume', '@volume{0.00 a}'      ),
+            ( 'fecha',   '@Date{%F}'            ),
+            ( 'cierre',  '@adj_close{%0.2f}'    ), # use @{ } for field names with spaces
+            ( 'volumen', '@volume{0.00 a}'      ),
         ],
 
         formatters={
@@ -39,12 +39,13 @@ def stock_plot(tick, stock_data):
         # display a tooltip whenever the cursor is vertically in line with a glyph
         mode='vline'
     )
-    p = figure(x_axis_type="datetime", title="Stock Closing Prices",
+    p = figure(x_axis_type="datetime", title="Precio ajustado al cierre de la acción",
                align='center', toolbar_location="below", width_policy="max")
     p.grid.grid_line_alpha=0.3
-    p.xaxis.axis_label = 'Date'
-    p.yaxis.axis_label = 'Price'
+    p.xaxis.axis_label = 'Fecha'
+    p.yaxis.axis_label = 'Precio'
     p.add_tools(hover)
+    p.toolbar.autohide = True
 
     p.line('Date', 'adj_close', color='#A6CEE3', source=ColumnDataSource(stock_data))
 

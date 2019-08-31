@@ -40,14 +40,10 @@
       <a class="nav-link" id="companies-tab" data-toggle="tab" href="#companies" role="tab" aria-controls="companies"
         aria-selected="true">Empresas</a>
     </li>
-    <!-- <li class="nav-item">
-      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-        aria-selected="false">Razones</a>
-    </li>
     <li class="nav-item">
-      <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-        aria-selected="false">Resultados</a>
-    </li> -->
+      <a class="nav-link" id="metrics-tab" data-toggle="tab" href="#metrics" role="tab" aria-controls="metrics"
+        aria-selected="false">Metricas</a>
+    </li>
   </ul>
   <div class="tab-content full-height" id="myTabContent">
     <div class="tab-pane fade show active bg text-light text-right font-weight-bold" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -73,6 +69,9 @@
     </div>
     <div class="tab-pane fade" id="companies" role="tabpanel" aria-labelledby="companies-tab">
       {{ embed(roots.empresas) }}
+    </div>
+    <div class="tab-pane fade" id="metrics" role="tabpanel" aria-labelledby="metrics-tab">
+      {{ embed(roots.metricas) }}
     </div>
   </div>
 </div>

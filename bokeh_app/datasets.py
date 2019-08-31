@@ -5,16 +5,45 @@ from os import listdir
 import yaml, io
 from scipy import stats
 
+def adjust_for_exchange_rate(df, exchange_rates):
+    df["exchange_rate"] = np.nan
+    df.set_index("Date", inplace=True)
+
+    for year in exchange_rates:
+        df.loc[[pd.to_datetime(year, format="%Y")],["exchange_rate"]] = exchange_rates[year]
+
+    df.reset_index(inplace=True)
+    columns_to_multiply = []
+    other_columns = []
+    for column in df.columns:
+        if df[column].dtype == np.float64:
+            columns_to_multiply.append(column)
+        else:
+            other_columns.append(column)
+    return df[other_columns].join(df[columns_to_multiply].multiply(df["exchange_rate"], axis="index"))
+
+
 def load_cash_flow(ticker, start_date, end_date):
     fname = join(dirname(__file__), 'static/data/%s/cash-flow.csv' % ticker.upper())
     data = pd.read_csv(fname, parse_dates=['Date'])
     data = data[(data['Date'] >= start_date) & (data['Date'] <= end_date)]
     return data
 
+
 def load_balance_sheet(ticker, start_date, end_date, exchange_rates):
     fname = join(dirname(__file__), 'static/data/%s/balance-sheet.csv' % ticker.upper())
     df = pd.read_csv(fname, parse_dates=['Date'])
     df = df[(df['Date'] >= start_date) & (df['Date'] <= end_date)]
+
+    # Normalize numbers in millions
+    for column in df.columns:
+        if df[column].dtype == np.object:
+          df[column] = df[column].apply(lambda x: str(x).replace(',', '')).astype('float') / 1000000
+
+    # Adjust exchange rates
+    if exchange_rates is not None:
+        df = adjust_for_exchange_rate(df, exchange_rates)
+        # print(df[['Date','Equity Attributable to Parent Stockholders',"exchange_rate"]])
 
     # Normalize data
     # df['Cost of Revenue'] = df['Cost of Revenue'].abs()
@@ -31,6 +60,7 @@ def load_balance_sheet(ticker, start_date, end_date, exchange_rates):
 
     return df
 
+
 def load_income_statement(ticker, start_date, end_date, exchange_rates):
     fname = join(dirname(__file__), 'static/data/%s/income-statement.csv' % ticker.upper())
     df = pd.read_csv(fname, parse_dates=['Date'])
@@ -44,22 +74,8 @@ def load_income_statement(ticker, start_date, end_date, exchange_rates):
 
     # Adjust exchange rates
     if exchange_rates is not None:
-        df["exchange_rate"] = np.nan
-        df.set_index("Date", inplace=True)
-
-        for year in exchange_rates:
-            df.loc[[pd.to_datetime(year, format="%Y")],["exchange_rate"]] = exchange_rates[year]
-
-        df.reset_index(inplace=True)
-        columns_to_multiply = []
-        other_columns = []
-        for column in df.columns:
-            if df[column].dtype == np.float64:
-                columns_to_multiply.append(column)
-            else:
-                other_columns.append(column)
-        df = df[other_columns].join(df[columns_to_multiply].multiply(df["exchange_rate"], axis="index"))
-        print(df[['Date','Pretax Income',"exchange_rate"]])
+        df = adjust_for_exchange_rate(df, exchange_rates)
+        # print(df[['Date','Net Income from Continuing Operations',"exchange_rate"]])
 
 
     #print(df.dtypes)
@@ -81,13 +97,16 @@ def calculate_global_metrics(dataset, ticker):
     gspc_stock_df = dataset["^GSPC"]["stock_data"]
     ticker_stock_df = dataset[ticker]["stock_data"]
     ticker_income_df = dataset[ticker]["income_statement_data"]
+    ticker_balance_df = dataset[ticker]["balance_sheet_data"]
 
     metrics_df = pd.DataFrame()
     metrics_df['Date'] = ticker_income_df['Date']
 
 
     # ROE = Pretax income / total assets
-    metrics_df['ROE'] = ticker_income_df['Pretax Income']
+    print(ticker_income_df['Net Income from Continuing Operations'])
+    print(ticker_balance_df['Equity Attributable to Parent Stockholders'])
+    metrics_df['ROE'] = ticker_income_df['Net Income from Continuing Operations'] / ticker_balance_df['Equity Attributable to Parent Stockholders']
 
     print("Metrics data frame")
     print(metrics_df)
