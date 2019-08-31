@@ -35,7 +35,10 @@ def load_stock_data(ticker, start_date, end_date):
     data = data[(data['Date'] >= start_date) & (data['Date'] <= end_date)]
     data = data.set_index('Date')
 #    return pd.DataFrame({ticker: data.Close, ticker+'_returns': data.Close.diff()})
-    return pd.DataFrame({ticker: data.Close, ticker+'_returns': data.Close.pct_change(1)})
+    return pd.DataFrame({ticker: data.Close,
+                         'adj_close': data["Adj Close"],
+                         'volume': data["Volume"],
+                         ticker+'_returns': data.Close.pct_change(1)})
 
 def calculate_global_metrics(dataset, ticker, start_date, end_date):
     gspc_stock_data = dataset["^GSPC"]["stock_data"]
@@ -63,13 +66,15 @@ def load_datasets():
     start_date = '2014-08-01'
     end_date = '2019-08-01'
     data_folder = join(dirname(__file__), 'static/data')
+    number_ticks = 0
 
     tickers_with_info = [f for f in listdir(data_folder) if isfile(join(data_folder, f, "info.yaml"))]
     for ticker in tickers_with_info:
         with open(join(data_folder, ticker, "info.yaml"), 'r') as stream:
             info = yaml.safe_load(stream)
             ticks.append((ticker, info))
-            print(ticker, info)
+            number_ticks += 1
+            # print(ticker, info)
 
     dataset["^GSPC"] = {
         "render": False,
@@ -88,4 +93,4 @@ def load_datasets():
         dataset[ticker]["global_metrics"] = calculate_global_metrics(dataset, ticker, start_date, end_date)
         dataset[ticker].update(info)
 
-    return dataset
+    return (number_ticks, dataset)
