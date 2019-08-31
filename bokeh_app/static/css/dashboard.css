@@ -2,8 +2,29 @@
  * Base structure
  */
 
+html, body {
+ height: 100%;
+}
+
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
   padding-top: 76px;
-  background: #F8F9FA !important;
+  /* background: #F8F9FA !important; */
+}
+
+.full-height {
+  height: 100%;
+}
+
+.bg {
+  /* The image used */
+  background-image: url("../images/intro-bg.jpg");
+
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
