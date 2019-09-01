@@ -40,7 +40,7 @@ def stock_plot(tick, stock_data):
         mode='vline'
     )
     p = figure(x_axis_type="datetime", title="Precio ajustado al cierre de la acción",
-               align='center', toolbar_location="below", width_policy="max")
+               align='center', toolbar_location="above", width_policy="max")
     p.grid.grid_line_alpha=0.3
     p.xaxis.axis_label = 'Fecha'
     p.yaxis.axis_label = 'Precio'

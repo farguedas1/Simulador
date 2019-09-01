@@ -116,8 +116,22 @@ def calculate_global_metrics(dataset, ticker):
 
     # EBITDA
     metrics_df['EBITDA'] = income_df['EBITDA']
+
+    # EVA
     metrics_df['EVA'] = income_df['_EVA']
+
+    # CPPC
     metrics_df['CPPC'] = income_df['_CPPC']
+
+    # Utilidad Neta
+    # metrics_df['CPPC'] = income_df['_CPPC']
+
+    # Z ALMAN
+    metrics_df['Z_ALTMAN'] = income_df['_Z_ALTMAN']
+
+    # Valoracion
+    # metrics_df['CPPC'] = income_df['_CPPC']
+
 
     print("Metrics data frame")
     print(metrics_df)

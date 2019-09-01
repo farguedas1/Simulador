@@ -18,12 +18,12 @@ from bokeh.plotting import figure
 import numpy as np
 
 
-def plot_metric(title, yaxis_title, metric, ticker_tuple_list, ticker_lines):
+def plot_metric(title, yaxis_title, metric, ticker_tuple_list, ticker_lines, y_format='{%0.2f}'):
     palette = ['#33A02C', '#FB9A99', '#A6CEE3', '#B2DF8A']
     color_index = 0
 
     p = figure(x_axis_type="datetime", title=title, plot_height=300,
-               align='center', toolbar_location="below", width_policy="max")
+               align='center', toolbar_location="above", width_policy="max")
     p.grid.grid_line_alpha=0.3
     p.xaxis.axis_label = 'Fecha'
     p.yaxis.axis_label = yaxis_title
@@ -41,7 +41,7 @@ def plot_metric(title, yaxis_title, metric, ticker_tuple_list, ticker_lines):
     hover = HoverTool(
         tooltips=[
             ( 'fecha',      '@Date{%F}'         ),
-            ( yaxis_title,  '@' + metric + '{%0.2f}'    ),
+            ( yaxis_title,  '@' + metric + y_format ),
         ],
 
         formatters={
@@ -95,15 +95,17 @@ def metricas_tab(nticks, datasets):
                                       ticker_lines)
     metric_plots["EBITDA"] = plot_metric("EBITDA",
                                       "Millones USD", "EBITDA", ticker_data_tuple_list,
-                                      ticker_lines)
+                                      ticker_lines, '{0.2f}')
     metric_plots["EVA"] = plot_metric("EVA",
                                       "Millones USD", "EVA", ticker_data_tuple_list,
-                                      ticker_lines)
+                                      ticker_lines, '{0.2f}')
     metric_plots["CPPC"] = plot_metric("CPPC",
                                       "Porcentaje", "CPPC", ticker_data_tuple_list,
                                       ticker_lines)
-
+    metric_plots["Z_ALTMAN"] = plot_metric("Z Altman",
+                                      "Indice", "Z_ALTMAN", ticker_data_tuple_list,
+                                      ticker_lines, '{0.2f}')
     return layout([
       [metric_plots["ROE"], metric_plots["ROA"], metric_plots["EBITDA"], Spacer()],
-      [metric_plots["EVA"], metric_plots["CPPC"], Spacer(), Spacer()],
+      [metric_plots["EVA"], metric_plots["CPPC"], metric_plots["Z_ALTMAN"], Spacer()],
     ], sizing_mode='stretch_both', name="metricas", width_policy='max', min_width=1024)
