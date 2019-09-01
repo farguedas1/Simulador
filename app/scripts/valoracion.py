@@ -1,53 +1,18 @@
-#import pandas as pd
-#import numpy as np
-
-#from bokeh.models import ColumnDataSource, Panel
-#from bokeh.models.widgets import TableColumn, DataTable, Div
-#from bokeh.plotting import figure
-
 from os.path import dirname, join
 
 import pandas as pd
 import datetime
 
 from bokeh.layouts import row, column, Spacer, WidgetBox, layout
-from bokeh.models import ColumnDataSource, Panel, Slider
+from bokeh.models import ColumnDataSource, Panel, Slider, Label
 from bokeh.models.tools import HoverTool
 from bokeh.models.widgets import DataTable, TableColumn, NumberFormatter, DateFormatter, Paragraph, Div, Markup
 from bokeh.plotting import figure
 import numpy as np
 
-def plot_projection(tick, stock_data):
-    hover = HoverTool(
-        tooltips=[
-            ( 'fecha',   '@Date{%F}'            ),
-            ( 'cierre',  '@adj_close{%0.2f}'    ), # use @{ } for field names with spaces
-            ( 'volumen', '@volume{0.00 a}'      ),
-        ],
-
-        formatters={
-            'Date'      : 'datetime', # use 'datetime' formatter for 'date' field
-            'adj_close' : 'printf',   # use 'printf' formatter for 'adj close' field
-                                      # use default 'numeral' formatter for other fields
-        },
-
-        # display a tooltip whenever the cursor is vertically in line with a glyph
-        mode='vline'
-    )
-    p = figure(x_axis_type="datetime", title="Precio ajustado al cierre de la acción",
-               align='center', toolbar_location="above", width_policy="max")
-    p.grid.grid_line_alpha=0.3
-    p.xaxis.axis_label = 'Fecha'
-    p.yaxis.axis_label = 'Precio'
-    p.add_tools(hover)
-    p.toolbar.autohide = True
-
-    p.line('Date', 'adj_close', color='#A6CEE3', source=ColumnDataSource(stock_data))
-
-    #p.min_border_left = 160
-    return p
 
 def render_valuation(tick, info):
+    metrics_df = info["global_metrics"]["metrics"]
     avg_grow = info["valuation"]["profit_grow_rate"]["average"]
     optimist_grow = info["valuation"]["profit_grow_rate"]["optimist"]
     pesimist_grow = info["valuation"]["profit_grow_rate"]["pesimist"]
@@ -69,7 +34,20 @@ def render_valuation(tick, info):
         data_df = income_df[["Date"]].join(
           income_df['Net Income from Continuing Operations'] * (1.0 + profit_grow_rate_slider.value))
         data_df.Date += pd.Timedelta(days=(365 * 5)+1)
-        source.data = data_df
+        # source.data = data_df
+        # print("NPV with {} and".format(cppc))
+        # print(data_df["Net Income from Continuing Operations"])
+        van = np.npv(cppc, data_df["Net Income from Continuing Operations"])
+        van_label.text = "VAN: {:,.2f}".format(van)
+
+        net_in_5 = data_df["Net Income from Continuing Operations"].iloc[4]
+        residual_in_5 = (net_in_5 * (1.0 + profit_grow_rate_slider.value) /
+                             (cppc - market_grow_rate_slider.value))
+        # print("residual = {} = {} * {} / ({} - {}) ".format(residual_in_5, net_in_5, 1.0 + profit_grow_rate_slider.value, cppc,market_grow_rate_slider.value))
+        van_residual = np.npv(cppc, [0, 0, 0, 0, residual_in_5])
+        van_residual_label.text = "VAN de valor residual: {:,.2f}".format(van_residual)
+        valor_label.text = "Valor de Mercado: {:,.2f}".format(van + van_residual)
+
 
     profit_grow_rate_slider = Slider(start=0, end=max, format="0.00%",
                                      value=avg_grow, step=0.0001, title="Tasa de crecimiento de ganancias anual:")
@@ -77,7 +55,7 @@ def render_valuation(tick, info):
 
     market_grow_rate_slider = Slider(start=0, end=max, format="0.00%",
                                      value=market_avg_grow, step=0.0001, title="Tasa de crecimiento (g) para flujos posteriores a 5 años:")
-    # market_grow_rate_slider.on_change('value', update_data)
+    market_grow_rate_slider.on_change('value', update_data)
 
     controls = WidgetBox(
        Div(text="<hr class='my-4'>Tasas de crecimiento de ganancias anual:"),
@@ -96,25 +74,58 @@ def render_valuation(tick, info):
        market_grow_rate_slider)
 
     income_df = info["income_statement_data"]
-    print(income_df[["Date","Net Income from Continuing Operations"]])
+    # print(income_df[["Date","Net Income from Continuing Operations"]])
     data_df = income_df[["Date"]].join(
       income_df['Net Income from Continuing Operations'] * (1.0 + profit_grow_rate_slider.value))
     data_df.Date += pd.Timedelta(days=(365 * 5)+1)
     # print(data_df)
-    source = ColumnDataSource(data=data_df)
+    # source = ColumnDataSource(data=data_df)
 
-    p = figure(x_axis_type="datetime", title="Proyección de crecimiento de ganancias",
-               align='center', toolbar_location="above", plot_height=300, width_policy="max")
-    p.grid.grid_line_alpha=0.3
-    p.xaxis.axis_label = 'Fecha'
-    p.yaxis.axis_label = 'Utilidad Neta'
-    # p.add_tools(hover)
-    p.toolbar.autohide = True
+    # p = figure(x_axis_type="datetime", title="Proyección de crecimiento de ganancias",
+    #            align='center', toolbar_location="above", plot_height=300, width_policy="max")
+    # p.grid.grid_line_alpha=0.3
+    # p.xaxis.axis_label = 'Fecha'
+    # p.yaxis.axis_label = 'Utilidad Neta'
+    # # p.add_tools(hover)
+    # p.toolbar.autohide = True
+    #
+    # p.line('Date', 'Net Income from Continuing Operations', color='#A6CEE3', source=source)
 
-    p.line('Date', 'Net Income from Continuing Operations', color='#A6CEE3', source=source)
+    d = figure(width_policy="max", plot_height=200, title="Resultados de Valoración",
+           y_range=(0, 5), x_range=(0, 20), toolbar_location=None)
+    d.outline_line_color = None
+    d.grid.grid_line_color = None
+    d.axis.axis_line_color = None
+    d.axis.axis_label_text_color = None
+    d.axis.minor_tick_line_color = None
+    d.axis.major_tick_line_color = None
+    d.axis.major_label_text_color = None
+    # print(metrics_df["CPPC"].iloc[-1])
 
+    cppc = metrics_df["CPPC"].iloc[-1]
+    label = Label(x=1, y=4, text="CPPC: {:.2%}".format(cppc), text_font_size='18pt')
+    d.add_layout(label)
 
-    return column(div, row(controls,p), width_policy='max')
+    # print("NPV with {} and".format(cppc))
+    print(data_df["Net Income from Continuing Operations"])
+
+    van = np.npv(cppc, data_df["Net Income from Continuing Operations"])
+    van_label = Label(x=1, y=3, text="VAN: {:,.2f}".format(van), text_font_size='18pt')
+    d.add_layout(van_label)
+
+    net_in_5 = data_df["Net Income from Continuing Operations"].iloc[4]
+    residual_in_5 = (net_in_5 * (1.0 + profit_grow_rate_slider.value) /
+                         (cppc - market_grow_rate_slider.value))
+    # print("residual = {} = {} * {} / ({} - {}) ".format(residual_in_5, net_in_5, 1.0 + profit_grow_rate_slider.value, cppc,market_grow_rate_slider.value))
+    van_residual = np.npv(cppc, [0, 0, 0, 0, residual_in_5])
+    van_residual_label = Label(x=1, y=2, text="VAN de valor residual: {:,.2f}".format(van_residual), text_font_size='18pt')
+    d.add_layout(van_residual_label)
+
+    valor_label = Label(x=1, y=0, text="Valor de Mercado: {:,.2f}".format(van + van_residual),
+                        text_font_style='bold', text_font_size='20pt')
+    d.add_layout(valor_label)
+
+    return column(div, row(controls,d), width_policy='max')
 
 
 def render_company_info(nticks, tick, info):

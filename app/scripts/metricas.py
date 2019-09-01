@@ -11,7 +11,7 @@ import pandas as pd
 import datetime
 
 from bokeh.layouts import row, column, WidgetBox, layout, Spacer
-from bokeh.models import ColumnDataSource, Panel
+from bokeh.models import ColumnDataSource, Panel, BoxAnnotation
 from bokeh.models.tools import HoverTool
 from bokeh.models.widgets import Paragraph, CheckboxGroup
 from bokeh.plotting import figure
@@ -105,9 +105,14 @@ def metricas_tab(nticks, datasets):
     metric_plots["CPPC"] = plot_metric("CPPC",
                                       "Porcentaje", "CPPC", ticker_data_tuple_list,
                                       ticker_lines)
-    metric_plots["Z_ALTMAN"] = plot_metric("Z Altman",
-                                      "Indice", "Z_ALTMAN", ticker_data_tuple_list,
-                                      ticker_lines, '{0.2f}')
+    z_altman_plot = plot_metric("Z Altman", "Indice", "Z_ALTMAN", ticker_data_tuple_list,
+                               ticker_lines, '{0.2f}')
+    z_altman_plot.y_range.start = 0
+    z_altman_plot.add_layout(BoxAnnotation(top=1.81, fill_alpha=0.1, fill_color='red'))
+    z_altman_plot.add_layout(BoxAnnotation(top=2.99, bottom=1.81, fill_alpha=0.1, fill_color='yellow'))
+    z_altman_plot.add_layout(BoxAnnotation(bottom=2.99, fill_alpha=0.1, fill_color='green'))
+    metric_plots["Z_ALTMAN"] = z_altman_plot
+
     return layout([
       [metric_plots["ROE"], metric_plots["ROA"], metric_plots["MUN"], metric_plots["EBITDA"]],
       [metric_plots["EVA"], metric_plots["CPPC"], metric_plots["Z_ALTMAN"], Spacer()],
