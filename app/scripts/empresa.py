@@ -22,7 +22,10 @@ def datetime(x):
 
 # AttributeError: unexpected attribute 'responsive' to Figure, possible attributes are above, align, aspect_ratio, aspect_scale, background, background_fill_alpha, background_fill_color, below, border_fill_alpha, border_fill_color, center, css_classes, disabled, extra_x_ranges, extra_y_ranges, frame_height, frame_width, height, height_policy, hidpi, inner_height, inner_width, js_event_callbacks, js_property_callbacks, left, lod_factor, lod_interval, lod_threshold, lod_timeout, margin, match_aspect, max_height, max_width, min_border, min_border_bottom, min_border_left, min_border_right, min_border_top, min_height, min_width, name, outer_height, outer_width, outline_line_alpha, outline_line_cap, outline_line_color, outline_line_dash, outline_line_dash_offset, outline_line_join, outline_line_width, output_backend, plot_height, plot_width, renderers, reset_policy, right, sizing_mode, subscribed_events, tags, title, title_location, toolbar, toolbar_location, toolbar_sticky, visible, width, width_policy, x_range, x_scale, y_range or y_scale
 
-def stock_plot(tick, stock_data):
+def plot_stocks(ticker_tuples):
+    palette = ['#33A02C', '#FB9A99', '#A6CEE3', '#B2DF8A']
+    color_index = 0
+
     hover = HoverTool(
         tooltips=[
             ( 'fecha',   '@Date{%F}'            ),
@@ -47,15 +50,19 @@ def stock_plot(tick, stock_data):
     p.add_tools(hover)
     p.toolbar.autohide = True
 
-    p.line('Date', 'adj_close', color='#A6CEE3', source=ColumnDataSource(stock_data))
+    for (tick, data) in ticker_tuples:
+        # print("adding tick {}".format(tick))
+        p.line('Date', 'adj_close', line_width=4, legend="{} ".format(tick),
+               color=palette[color_index], source=ColumnDataSource(data))
+        color_index += 1
 
+    p.legend.location = "top_left"
+    p.legend.click_policy="hide"
     #p.min_border_left = 160
     return p
 
 
 def render_company_info(nticks, tick, info):
-    p = stock_plot(tick, info["stock_data"])
-
     text="""
       <div class="card">
         <div class="card-body">
@@ -64,19 +71,25 @@ def render_company_info(nticks, tick, info):
           <h5 class="card-title"><a href="{website}">{website}</a></h5>
           <hr class="my-4">
           <p class="card-text">{description}</p>
-          <hr class="my-4">
         </div>
       </div>
     """.format(name=info['name'], tick=tick, logo=info['logo'],
                website=info['website'],description=info['description'])
-    div = Div(text=text)
+    div = Div(text=text, width_policy='max')
 
-    return column(children=[div, p], width_policy='max', css_classes=["col-sm-12"])
+    # return column(children=[div, p], width_policy='max', css_classes=["col-sm-12"])
+    return div
 
 def company_info_tab(nticks, datasets):
     ticker_columns = []
+    render_tickets = []
     for tick in datasets:
         if not datasets[tick]["render"]:
             continue
         ticker_columns.append(render_company_info(nticks, tick, datasets[tick]))
-    return row(children=ticker_columns, name="empresas", width_policy='max', min_width=1024)
+        render_tickets.append((tick, datasets[tick]["stock_data"]))
+    return  column(
+              row(children=ticker_columns),
+              row(plot_stocks(render_tickets)),
+              name="empresas", width_policy='max', min_width=1024
+            )

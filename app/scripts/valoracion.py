@@ -13,13 +13,13 @@ import numpy as np
 
 def render_valuation(tick, info):
     metrics_df = info["global_metrics"]["metrics"]
-    avg_grow = info["valuation"]["profit_grow_rate"]["average"]
-    optimist_grow = info["valuation"]["profit_grow_rate"]["optimist"]
-    pesimist_grow = info["valuation"]["profit_grow_rate"]["pesimist"]
+    avg_grow = info["valuation"]["profit_grow_rate"]
+    optimist_grow = round(avg_grow + 0.02, 2)
+    pesimist_grow = round(avg_grow - 0.02, 2)
 
-    market_avg_grow = info["valuation"]["market_grow_rate"]["average"]
-    market_optimist_grow = info["valuation"]["market_grow_rate"]["optimist"]
-    market_pesimist_grow = info["valuation"]["market_grow_rate"]["pesimist"]
+    market_avg_grow = info["valuation"]["market_grow_rate"]
+    market_optimist_grow = round(market_avg_grow + 0.02, 2)
+    market_pesimist_grow = round(market_avg_grow - 0.02, 2)
     if market_optimist_grow > optimist_grow :
         max = market_optimist_grow
     else:
@@ -71,6 +71,7 @@ def render_valuation(tick, info):
            Div(text="<b>Promedio:</b> {}%".format(market_avg_grow * 100)),
            Div(text="<b>Optimista:</b> {}%".format(market_optimist_grow * 100)),
        ),
+       Div(text="<hr class='my-4'>"),
        market_grow_rate_slider)
 
     income_df = info["income_statement_data"]
@@ -125,7 +126,7 @@ def render_valuation(tick, info):
                         text_font_style='bold', text_font_size='20pt')
     d.add_layout(valor_label)
 
-    return column(div, row(controls,d), width_policy='max')
+    return column(div, controls, Div(text='<hr class="my-4">'), d, width_policy='max')
 
 
 def render_company_info(nticks, tick, info):

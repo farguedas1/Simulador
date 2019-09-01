@@ -8,6 +8,7 @@
     margarina, y Lever Brothers, fabricante inglés de jabones. Durante la
     segunda mitad del siglo XX la empresa se diversificó a base de productos
     hechos de aceites y grasas y amplió sus operaciones en todo el mundo.
+
   exchange_rates:
     2014: 1.21
     2015: 1.09
@@ -15,11 +16,5 @@
     2017: 1.20
     2018: 1.15
   valuation:
-    profit_grow_rate:
-      average: 0.0802
-      optimist: 0.1002
-      pesimist: 0.0602
-    market_grow_rate:
-      average: 0.0300
-      optimist: 0.0500
-      pesimist: 0.0100
+    profit_grow_rate: 0.0802
+    market_grow_rate: 0.0300
