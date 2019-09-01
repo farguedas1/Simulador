@@ -32,4 +32,6 @@ código fuente:
 
   python3 -m bokeh serve --show app
 
-Este comando procedera a abrir un navegador apuntando hacia la aplicación.
+Este comando procedera a abrir un navegador apuntando hacia la aplicación:
+
+.. image:: screenshot.jpeg
