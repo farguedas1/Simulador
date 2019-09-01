@@ -10,7 +10,7 @@ from os.path import dirname, join
 import pandas as pd
 import datetime
 
-from bokeh.layouts import row, column, WidgetBox, layout
+from bokeh.layouts import row, column, WidgetBox, layout, Spacer
 from bokeh.models import ColumnDataSource, Panel
 from bokeh.models.tools import HoverTool
 from bokeh.models.widgets import Paragraph, CheckboxGroup
@@ -22,10 +22,10 @@ def plot_metric(title, yaxis_title, metric, ticker_tuple_list, ticker_lines):
     palette = ['#33A02C', '#FB9A99', '#A6CEE3', '#B2DF8A']
     color_index = 0
 
-    p = figure(x_axis_type="datetime", title=title,
+    p = figure(x_axis_type="datetime", title=title, plot_height=300,
                align='center', toolbar_location="below", width_policy="max")
     p.grid.grid_line_alpha=0.3
-    p.xaxis.axis_label = 'Date'
+    p.xaxis.axis_label = 'Fecha'
     p.yaxis.axis_label = yaxis_title
     p.toolbar.autohide = True
 
@@ -46,8 +46,7 @@ def plot_metric(title, yaxis_title, metric, ticker_tuple_list, ticker_lines):
 
         formatters={
             'Date'        : 'datetime', # use 'datetime' formatter for 'date' field
-            'yaxis_title' : 'printf',   # use 'printf' formatter for 'adj close' field
-                                      # use default 'numeral' formatter for other fields
+            yaxis_title   : 'printf',   # use 'printf' formatter
         },
 
         # display a tooltip whenever the cursor is vertically in line with a glyph
@@ -88,10 +87,23 @@ def metricas_tab(nticks, datasets):
 
     # Plot the metrics with all the tickers
     metric_plots = dict()
-    metric_plots["ROE"] = plot_metric("Retorno sobre el Patrimonio RCP",
+    metric_plots["ROE"] = plot_metric("Retorno sobre el Patrimonio RSP",
                                       "Porcentaje", "ROE", ticker_data_tuple_list,
+                                      ticker_lines)
+    metric_plots["ROA"] = plot_metric("Rendimiento de Operación sobre Activos",
+                                      "Porcentaje", "ROA", ticker_data_tuple_list,
+                                      ticker_lines)
+    metric_plots["EBITDA"] = plot_metric("EBITDA",
+                                      "Millones USD", "EBITDA", ticker_data_tuple_list,
+                                      ticker_lines)
+    metric_plots["EVA"] = plot_metric("EVA",
+                                      "Millones USD", "EVA", ticker_data_tuple_list,
+                                      ticker_lines)
+    metric_plots["CPPC"] = plot_metric("CPPC",
+                                      "Porcentaje", "CPPC", ticker_data_tuple_list,
                                       ticker_lines)
 
     return layout([
-      [metric_plots["ROE"]],
+      [metric_plots["ROE"], metric_plots["ROA"], metric_plots["EBITDA"], Spacer()],
+      [metric_plots["EVA"], metric_plots["CPPC"], Spacer(), Spacer()],
     ], sizing_mode='stretch_both', name="metricas", width_policy='max', min_width=1024)

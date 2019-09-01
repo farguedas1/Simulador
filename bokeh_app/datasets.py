@@ -16,7 +16,8 @@ def adjust_for_exchange_rate(df, exchange_rates):
     columns_to_multiply = []
     other_columns = []
     for column in df.columns:
-        if df[column].dtype == np.float64:
+        if (df[column].dtype == np.float64 and
+            column[0] != '_'):
             columns_to_multiply.append(column)
         else:
             other_columns.append(column)
@@ -78,7 +79,7 @@ def load_income_statement(ticker, start_date, end_date, exchange_rates):
         # print(df[['Date','Net Income from Continuing Operations',"exchange_rate"]])
 
 
-    #print(df.dtypes)
+    # print(df.dtypes)
 
     # Calculate some extra columns
     #data['Sales Expenses'] = data['R&D Expenses'] + data['Operating Expenses']
@@ -95,18 +96,28 @@ def load_stock_data(ticker, start_date, end_date):
 
 def calculate_global_metrics(dataset, ticker):
     gspc_stock_df = dataset["^GSPC"]["stock_data"]
-    ticker_stock_df = dataset[ticker]["stock_data"]
-    ticker_income_df = dataset[ticker]["income_statement_data"]
-    ticker_balance_df = dataset[ticker]["balance_sheet_data"]
+    stock_df = dataset[ticker]["stock_data"]
+    income_df = dataset[ticker]["income_statement_data"]
+    balance_df = dataset[ticker]["balance_sheet_data"]
 
     metrics_df = pd.DataFrame()
-    metrics_df['Date'] = ticker_income_df['Date']
+    metrics_df['Date'] = income_df['Date']
 
 
     # ROE = Pretax income / total assets
-    print(ticker_income_df['Net Income from Continuing Operations'])
-    print(ticker_balance_df['Equity Attributable to Parent Stockholders'])
-    metrics_df['ROE'] = ticker_income_df['Net Income from Continuing Operations'] / ticker_balance_df['Equity Attributable to Parent Stockholders']
+    # print(income_df['Net Income from Continuing Operations'])
+    # print(balance_df['Equity Attributable to Parent Stockholders'])
+    metrics_df['ROE'] = income_df['Net Income from Continuing Operations'] / balance_df['Equity Attributable to Parent Stockholders']
+
+    # ROA = Utilidad de operacion / activo total
+    #print(income_df['Reported Total Operating Profit/Loss'])
+    #print(balance_df['Total Assets'])
+    metrics_df['ROA'] = income_df['Reported Total Operating Profit/Loss'] / balance_df['Total Assets']
+
+    # EBITDA
+    metrics_df['EBITDA'] = income_df['EBITDA']
+    metrics_df['EVA'] = income_df['_EVA']
+    metrics_df['CPPC'] = income_df['_CPPC']
 
     print("Metrics data frame")
     print(metrics_df)
