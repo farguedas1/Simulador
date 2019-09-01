@@ -93,6 +93,9 @@ def metricas_tab(nticks, datasets):
     metric_plots["ROA"] = plot_metric("Rendimiento de Operación sobre Activos",
                                       "Porcentaje", "ROA", ticker_data_tuple_list,
                                       ticker_lines)
+    metric_plots["MUN"] = plot_metric("Mergen de Utilidad Neta",
+                                      "Porcentaje", "MUN", ticker_data_tuple_list,
+                                      ticker_lines)
     metric_plots["EBITDA"] = plot_metric("EBITDA",
                                       "Millones USD", "EBITDA", ticker_data_tuple_list,
                                       ticker_lines, '{0.2f}')
@@ -106,6 +109,6 @@ def metricas_tab(nticks, datasets):
                                       "Indice", "Z_ALTMAN", ticker_data_tuple_list,
                                       ticker_lines, '{0.2f}')
     return layout([
-      [metric_plots["ROE"], metric_plots["ROA"], metric_plots["EBITDA"], Spacer()],
+      [metric_plots["ROE"], metric_plots["ROA"], metric_plots["MUN"], metric_plots["EBITDA"]],
       [metric_plots["EVA"], metric_plots["CPPC"], metric_plots["Z_ALTMAN"], Spacer()],
     ], sizing_mode='stretch_both', name="metricas", width_policy='max', min_width=1024)

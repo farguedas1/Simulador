@@ -113,6 +113,7 @@ def calculate_global_metrics(dataset, ticker):
     #print(income_df['Reported Total Operating Profit/Loss'])
     #print(balance_df['Total Assets'])
     metrics_df['ROA'] = income_df['Reported Total Operating Profit/Loss'] / balance_df['Total Assets']
+    metrics_df['MUN'] = income_df['Net Income from Continuing Operations'] / income_df['Total Revenue']
 
     # EBITDA
     metrics_df['EBITDA'] = income_df['EBITDA']

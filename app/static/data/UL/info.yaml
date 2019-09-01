@@ -3,7 +3,7 @@
   website: "https://www.unilever.com"
   logo: "1200px-Unilever.png"
   description: |
-    es una empresa multinacional británico-neerlandesa creada en 1930 como
+    Unilever es una empresa multinacional británico-neerlandesa creada en 1930 como
     resultado de la fusión de Margarine Unie, compañía neerlandesa de
     margarina, y Lever Brothers, fabricante inglés de jabones. Durante la
     segunda mitad del siglo XX la empresa se diversificó a base de productos
@@ -14,3 +14,12 @@
     2016: 1.06
     2017: 1.20
     2018: 1.15
+  valuation:
+    profit_grow_rate:
+      average: 0.0802
+      optimist: 0.1002
+      pesimist: 0.0602
+    market_grow_rate:
+      average: 0.0300
+      optimist: 0.0500
+      pesimist: 0.0100

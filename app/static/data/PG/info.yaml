@@ -10,3 +10,12 @@
     artículos de limpieza y productos de cuidado personal. Antes de la venta
     de Pringles a la compañía Kellogg's, su línea de productos incluía
     alimentos y bebidas
+  valuation:
+    profit_grow_rate:
+      average: 0.0713
+      optimist: 0.0913
+      pesimist: 0.0513
+    market_grow_rate:
+      average: 0.0300
+      optimist: 0.0500
+      pesimist: 0.0100
