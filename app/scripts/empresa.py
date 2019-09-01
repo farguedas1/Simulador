@@ -59,7 +59,7 @@ def render_company_info(nticks, tick, info):
     text="""
       <div class="card">
         <div class="card-body">
-          <img src="bokeh_app/static/data/{tick}/{logo}" class="float-right" height="150px" width="150px">
+          <img src="app/static/data/{tick}/{logo}" class="float-right" height="150px" width="150px">
           <h1 class="display-4">{name}</h1>
           <h5 class="card-title"><a href="{website}">{website}</a></h5>
           <hr class="my-4">
