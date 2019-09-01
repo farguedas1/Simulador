@@ -10,11 +10,9 @@ Documentación del Modelo de Diagnóstico Financiero y de Valoración para Empre
    :maxdepth: 2
    :caption: Contents:
 
+   intro
+   installation
+   adding_companies
+   future_work
 
-
-Indices y Tablas
-=================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. image:: logo-tec.png
