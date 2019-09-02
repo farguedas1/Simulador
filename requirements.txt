@@ -1,4 +1,4 @@
 pandas
 scipy
+numpy
 bokeh
-statsmodels
